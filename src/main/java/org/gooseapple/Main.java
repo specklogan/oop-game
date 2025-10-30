@@ -24,7 +24,7 @@ public class Main extends Application {
         primaryStage.setScene(game.getScene());
 
         //Physics and UI thread listening happen here
-        dispatcher = new LoopDispatcher();
+        dispatcher = new LoopDispatcher(game);
 
         primaryStage.show();
     }
