@@ -14,11 +14,20 @@ public class Rectangle extends AbstractRenderable {
     private Vector2 position;
     private Vector2 velocity;
     private Texture texture;
+    private double opacity = 1;
 
     public Rectangle(Vector2 size, Vector2 position) {
         super();
         this.size = size;
         this.position = position;
+    }
+
+    public double getOpacity() {
+        return opacity;
+    }
+
+    public void setOpacity(double opacity) {
+        this.opacity = opacity;
     }
 
     public Texture getTexture() {
@@ -57,11 +66,20 @@ public class Rectangle extends AbstractRenderable {
     public void render(RenderEvent event) {
         var gc = event.getGraphicsContext();
 
+        if (opacity != 1) {
+            gc.save();
+            gc.setGlobalAlpha(opacity);
+        }
+
         if (texture == null) {
             gc.setFill(Color.BLACK);
             gc.fillRect(position.getX(), position.getY(), size.getX(), size.getY());
         } else {
             gc.drawImage(texture.getImage(), position.getX(), position.getY(), size.getX(), size.getY());
+        }
+
+        if (opacity != 1) {
+            gc.restore();
         }
     }
 

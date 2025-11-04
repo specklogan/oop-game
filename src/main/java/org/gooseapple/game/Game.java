@@ -12,6 +12,7 @@ import org.gooseapple.core.render.Texture;
 import org.gooseapple.core.sound.Sound;
 import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
+import org.gooseapple.game.objects.FlakBurst;
 import org.gooseapple.level.Level;
 import org.w3c.dom.css.Rect;
 
@@ -94,6 +95,7 @@ public class Game extends Level {
     @EventHandler
     public void HandleBulletDestroyEvent(DestroyBulletEvent event) {
         flakBurst.play();
+        new FlakBurst(event.getBullet().getPosition());
         bullets.remove(event.getBullet());
     }
 
