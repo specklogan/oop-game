@@ -32,6 +32,7 @@ public class Entity extends Rectangle {
 
     public void damage(double amount) {
         this.health -= amount;
+        System.out.println("current health: "+health);
     }
 
     @Override

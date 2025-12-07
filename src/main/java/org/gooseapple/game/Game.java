@@ -52,6 +52,7 @@ public class Game extends Level {
     private double minSpeed = 0;
 
     private Random random = new Random();
+    private int enemyRarity;
 
     public Game() {
         /**
@@ -100,10 +101,17 @@ public class Game extends Level {
 
     public void spawnEnemies(int count) {
         for (int i = 0; i < count; i++) {
-            double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
-            double y = random.nextDouble(40, screenSize.getY() - 200);
-            Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
-            zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+            enemyRarity = random.nextInt(100)+1;
+
+            if(enemyRarity<100 || enemyRarity>=100){  //Zeppelin 100% spawn rate
+                double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
+                double y = random.nextDouble(40, screenSize.getY() - 200);
+                Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
+                zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+            }
+            else if(enemyRarity<1 || enemyRarity>=0){     //setup for future enemies
+                
+            }
         }
     }
 
@@ -153,12 +161,14 @@ public class Game extends Level {
             else{this.speed -= 0.125;}
             this.parallax.setSpeed(this.speed);
         }
-        else if (event.keyCode(KeyCode.SPACE)) { //debug spawning zeppelin manual single spawn
+        else if (event.keyCode(KeyCode.Z)) { //debug spawning zeppelin manual single spawn
             zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 40));
             zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+            System.out.println("Spawning Zeppelin (Manual)");
         }
-        else if (event.keyCode(KeyCode.SOFTKEY_5)) { //debug spawning zeppelin calling method to spawn multiple
+        else if (event.keyCode(KeyCode.M)) { //debug spawning zeppelin calling method to spawn multiple
             spawnEnemies(5);
+            System.out.println("Spawning 5 enemies (Method)");
         }
     }
 

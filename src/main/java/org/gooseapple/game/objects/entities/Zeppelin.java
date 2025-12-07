@@ -24,10 +24,12 @@ public class Zeppelin extends Entity {
 
     @EventHandler
     public void onHitWithBullet(BulletHitEvent event) {
-        damage(event.getBullet().getDamage());
+        if(event.getEntity() == this){
+            damage(event.getBullet().getDamage());
 
-        if (getHealth() <= 0) {
-            getPhysicsBody().setAffectedByGravity(true);
+            if (getHealth() <= 0) {
+                getPhysicsBody().setAffectedByGravity(true);
+            }
         }
     }
 }
