@@ -70,4 +70,9 @@ public class Carriage extends Rectangle {
     public void setHealth(int health) {
         this.health = health;
     }
+
+    public void damage(double amount) {
+        this.health -= amount;
+        System.out.println("current Carriage health: "+health);
+    }
 }
