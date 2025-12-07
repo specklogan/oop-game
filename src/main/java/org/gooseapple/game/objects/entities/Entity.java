@@ -32,7 +32,6 @@ public class Entity extends Rectangle {
 
     public void damage(double amount) {
         this.health -= amount;
-        System.out.println("current health: "+health);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class Entity extends Rectangle {
 
         super.render(event);
 
-        if (renderHealth) {
+        if (renderHealth && health > 0) {
             Vector2 topLeft = this.getPosition().clone();
             topLeft.add(new Vector2(20, -20));
 

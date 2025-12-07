@@ -22,6 +22,7 @@ public class Bullet extends Rectangle {
         Random random = new Random();
         ranTicksBeforeExplosion = random.nextInt(10,60);
 
+        getPhysicsBody().setAffectedByGravity(true);
         getPhysicsBody().setCollisionEnabled(true);
     }
 
@@ -41,9 +42,9 @@ public class Bullet extends Rectangle {
 
     @Override
     public void remove() {
+        super.remove();
         DestroyBulletEvent bulletEvent = new DestroyBulletEvent(this);
         bulletEvent.dispatch();
-        super.remove();
     }
 
     @EventHandler
@@ -68,5 +69,9 @@ public class Bullet extends Rectangle {
     @Override
     public void render(RenderEvent event) {
         super.render(event);
+    }
+
+    public void setDamage(double damage) {
+        this.damage = (int) damage;
     }
 }

@@ -17,6 +17,9 @@ public class Fire extends Rectangle {
         smoke = new Rectangle(new Vector2(29,80), new Vector2(position.getX() - 3, position.getY() - 52), false, "textures/fire/smoke.gif");
         smoke.setTexture(new Texture("textures/fire/smoke.gif"));
 
+        smoke.setTextureOffset(new Vector2(-3, -50));
+        smoke.setPhysicsBody(this.getPhysicsBody());
+
     }
 
     @Override
