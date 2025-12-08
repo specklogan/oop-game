@@ -58,6 +58,8 @@ public class Game extends Level {
     private Random random = new Random();
     private int enemyRarity;
 
+    private boolean debugMode = false; //Manual Debug Toggle (In-game use "D" to enter debug mode)
+
     public Game() {
         /**
          * TODO: Add background, maybe parallax for that 2d/3d aesthetic?
@@ -94,17 +96,25 @@ public class Game extends Level {
     }
 
     private int enemiesActive = 0;
-    public void spawnEnemies(int count) {
+    public void spawnEnemies(int count){ //Helper, can either spawn random type of enemies or spesific
+        spawnEnemies(count, -1);
+    }
+    public void spawnEnemies(int count, int enemyType) {
         for (int i = 0; i < count; i++) {
-            enemyRarity = random.nextInt(100)+1;
+            if(enemyType == -1){
+                enemyRarity = random.nextInt(100)+1;
+            }
+            else{
+                enemyRarity = enemyType;
+            }
 
-            if(enemyRarity < 51){  //Zeppelin 50% spawn rate
+            if(enemyRarity < 51){  //Zeppelin 50% spawn rate 1-50
                 double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
                 double y = random.nextDouble(40, screenSize.getY() - 200);
                 Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
                 zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
             }
-            else if(enemyRarity >= 51){     //Biplane 50% spawn rate
+            else if(enemyRarity >= 51){     //Biplane 50% spawn rate 51-100
                 double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
                 double y = random.nextDouble(40, screenSize.getY() - 200);
                 Biplane biplane = new Biplane(new Vector2(x, y));
@@ -155,21 +165,35 @@ public class Game extends Level {
             else{this.speed -= acceleration;}
             this.parallax.setSpeed(this.speed);
         }
-        else if (event.keyCode(KeyCode.Z)) { //debug spawning zeppelin manual single spawn
-            spawnEnemies(1);
+        else if (event.keyCode(KeyCode.D)){
+            if(debugMode)
+                debugMode = false;
+            else
+                debugMode = true;
         }
-        else if (event.keyCode(KeyCode.M)) { //debug spawning zeppelin calling method to spawn multiple
-            spawnEnemies(5);
-        }
-        else if (event.keyCode(KeyCode.UP)) { //debug acceleration up
-            acceleration++;
-            maxSpeed++;
-            System.out.println("Acceleration Up: "+acceleration);
-        }
-        else if (event.keyCode(KeyCode.DOWN)) { //debug acceleration down
-            acceleration--;
-            maxSpeed--;
-            System.out.println("Acceleration Down: "+acceleration);
+        if(debugMode){
+            if (event.keyCode(KeyCode.Z)) { //debug spawning Zepplen single spawn
+                spawnEnemies(1, 50);
+                System.out.println("Spawning Zep");
+            }
+            else if (event.keyCode(KeyCode.B)) { //debug spawning Biplane single spawn
+                spawnEnemies(1, 51);
+                System.out.println("Spawning Bi");
+            }
+            else if (event.keyCode(KeyCode.M)) { //debug spawning enemy multiple spawn
+                spawnEnemies(5);
+                System.out.println("Spawning 5 Random");
+            }
+            else if (event.keyCode(KeyCode.UP)) { //debug acceleration up
+                acceleration++;
+                maxSpeed++;
+                System.out.println("Acceleration Up: "+acceleration);
+            }
+            else if (event.keyCode(KeyCode.DOWN)) { //debug acceleration down
+                acceleration--;
+                maxSpeed--;
+                System.out.println("Acceleration Down: "+acceleration);
+            }
         }
     }
 
@@ -178,45 +202,57 @@ public class Game extends Level {
     private double distance = 0;
     private String sDDistance = "";
     private String sDSpeed = "";
+    private double timer = 0;
     
 
     @EventHandler
     public void handleDevCounter(TickEvent event) {
         deltaTime = event.getDeltaTime();
         distance += speed * deltaTime * 1/10;
+        timer += deltaTime;
     }
 
     private int shortener;
     private double sDistance;
+    private boolean resetTimer;
     
     @EventHandler
     public void handleEnemySpawns(TickEvent event) {
         shortener = (int)(distance*10.0);        //shortens number to one decimal point
         sDistance = ((double)shortener)/10.0;
-        //System.out.println("Number is: "+sDistance);
-        if(sDistance != 0){
+
+        if(sDistance != 0 && timer > 10){
             if((sDistance/50)%1 == 0){
                 spawnEnemies(2); //2 enemies total each increment of 500 (every 33 sec at max)
-                System.out.println("Auto spawning 500");
+                if(debugMode)
+                    System.out.println("Auto spawning 50");
+                resetTimer = true;
             }
             if((sDistance/100)%1 == 0){
                 spawnEnemies(4); //6 enemies total each increment of 1,0000 (every 67 sec at max)
-                System.out.println("Auto spawning 1,000");
+                if(debugMode)
+                    System.out.println("Auto spawning 100");
             }
             if((sDistance/500)%1 == 0){
                 spawnEnemies(6); //12 enemies total each increment of 5,000 (every 333 sec at max)
-                System.out.println("Auto spawning 5,000");
+                if(debugMode)
+                    System.out.println("Auto spawning 500");
             }
-            if((sDistance/500)%1 == 0){
+            if((sDistance/1000)%1 == 0){
                 spawnEnemies(8); //20 enemies total each increment of 10,000 (every 667 sec at max)
-                System.out.println("Auto spawning 10,000");
+                if(debugMode)
+                    System.out.println("Auto spawning 1000");
+            }
+
+            if(resetTimer){
+                timer=0;
+                resetTimer = false;
             }
         }
     }
 
     @EventHandler
     public void handleDisplay(RenderEvent event) {
-        //event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,45);
 
         event.getGraphicsContext().setFill(javafx.scene.paint.Color.rgb(174,197,205,0.8));  //want to move elsewhere later
         event.getGraphicsContext().fillRoundRect(10, 5, 200, 40, 10,10);
@@ -227,7 +263,13 @@ public class Game extends Level {
         sDSpeed = String.format("%.1f", speed * 9)+ "kph"; //Makes Speed down to one decimal place and "converts" it to kilo meters
         event.getGraphicsContext().fillText("Current Speed: " +  sDSpeed, 15,40);
 
-        //event.getGraphicsContext().fillText("Total Spawned Enemy Count: " +  enemiesActive, 15,60);
+        if(debugMode){
+            event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,60);
+            event.getGraphicsContext().fillText("Total Spawned Enemy Count: " +  enemiesActive, 15,80);
+            event.getGraphicsContext().fillText("Spawning Number is: " +  sDistance, 15,100);
+            event.getGraphicsContext().fillText("Timer is: " +  timer, 15,120);
+
+        }
 
     }
 
