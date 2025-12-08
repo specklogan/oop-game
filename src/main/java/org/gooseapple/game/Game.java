@@ -88,6 +88,8 @@ public class Game extends Level {
         this.flakBurst.setVolume(0.05);
 
         this.parallax = new Parallax(BackgroundType.PLAINS, screenSize);
+
+        spawnEnemies(5);
         
     }
 
@@ -193,19 +195,19 @@ public class Game extends Level {
         sDistance = ((double)shortener)/10.0;
         //System.out.println("Number is: "+sDistance);
         if(sDistance != 0){
-            if((sDistance/500)%1 == 0){
+            if((sDistance/50)%1 == 0){
                 spawnEnemies(2); //2 enemies total each increment of 500 (every 33 sec at max)
                 System.out.println("Auto spawning 500");
             }
-            if((sDistance/1000)%1 == 0){
+            if((sDistance/100)%1 == 0){
                 spawnEnemies(4); //6 enemies total each increment of 1,0000 (every 67 sec at max)
                 System.out.println("Auto spawning 1,000");
             }
-            if((sDistance/5000)%1 == 0){
+            if((sDistance/500)%1 == 0){
                 spawnEnemies(6); //12 enemies total each increment of 5,000 (every 333 sec at max)
                 System.out.println("Auto spawning 5,000");
             }
-            if((sDistance/5000)%1 == 0){
+            if((sDistance/500)%1 == 0){
                 spawnEnemies(8); //20 enemies total each increment of 10,000 (every 667 sec at max)
                 System.out.println("Auto spawning 10,000");
             }
