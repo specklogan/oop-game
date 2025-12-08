@@ -22,7 +22,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //All of the calculations is held on this game object
+        //All the calculations is held on this game object
         Game game = new Game();
 
         primaryStage.setScene(game.getScene());

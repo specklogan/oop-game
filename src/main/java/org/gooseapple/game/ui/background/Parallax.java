@@ -7,6 +7,9 @@ import org.gooseapple.core.event.ListenerPriority;
 import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
+import org.gooseapple.game.Game;
+import org.gooseapple.game.event.EnteredTownEvent;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,12 +22,15 @@ public class Parallax implements EventListener {
     private Vector2 screenSize;
     private Random random = new Random();
 
-    public Parallax(BackgroundType backgroundType, Vector2 screenSize) {
+    private Game instance;
+
+    public Parallax(BackgroundType backgroundType, Vector2 screenSize, Game game) {
         this.backgrounds = new ArrayList<>();
         this.railroad = new ArrayList<>();
         EventManager.getInstance().addListener(this);
         this.backgroundType = backgroundType;
         this.screenSize = screenSize.clone();
+        this.instance = game;
         loadBackgrounds(backgroundType, screenSize);
         initRailroad();
     }
@@ -57,7 +63,7 @@ public class Parallax implements EventListener {
 
     //These may get moved to their own classes later on, but for now this is what I have
     private void initRailroad() {
-        RailroadTile first = new RailroadTile(RailroadType.RAILROAD, new Vector2(0, screenSize.getY() - 40));
+        RailroadTile first = new RailroadTile(RailroadType.RAILROAD, new Vector2(0, screenSize.getY() - 40), 0);
         railroad.add(first);
         while (getRailroadEndX() < screenSize.getX()) {
             spawnNextRailroad();
@@ -69,13 +75,40 @@ public class Parallax implements EventListener {
         return last.getPosition().getX() + last.getSize().getX();
     }
 
+    private int unspawnedTownTiles = 0;
     private void spawnNextRailroad() {
         RailroadTile last = railroad.getLast();
+
+        if (this.instance.canSpawnTown()) {
+            if (unspawnedTownTiles == 0) {
+                Random random = new Random();
+                unspawnedTownTiles = random.nextInt(8,20);
+
+                EnteredTownEvent event = new EnteredTownEvent(unspawnedTownTiles);
+                event.dispatch();
+
+                RailroadTile tile = new RailroadTile(RailroadType.RAILROAD, new Vector2(getRailroadEndX(), screenSize.getY() - 40), unspawnedTownTiles);
+                railroad.add(tile);
+                return;
+            }
+        }
+
         ArrayList<RailroadType> valid = last.getNextValidTypes();
+
+
         RailroadType next = valid.get(random.nextInt(valid.size()));
-        RailroadTile tile = new RailroadTile(next, new Vector2(getRailroadEndX(), screenSize.getY() - 40));
-        //TODO: the screenSize.getY will end up being replaced, I plan on having two separate screensizes, one for the controls portion, and the other
-        //for the visible game portion
+
+
+        RailroadTile tile = new RailroadTile(next, new Vector2(getRailroadEndX(), screenSize.getY() - 40), unspawnedTownTiles);
+
+        if (unspawnedTownTiles > 0) {
+            unspawnedTownTiles -= 1;
+            if (unspawnedTownTiles == 0) {
+                //handle last case to allow town to end
+                railroad.add(new RailroadTile(RailroadType.RAILROAD, new Vector2(getRailroadEndX(), screenSize.getY() - 40), 0));
+            }
+        }
+
         railroad.add(tile);
     }
 

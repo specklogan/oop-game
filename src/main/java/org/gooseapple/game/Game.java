@@ -5,6 +5,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.gooseapple.core.collision.PhysicsService;
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.KeyboardEvent;
@@ -16,6 +19,7 @@ import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.core.render.Texture;
 import org.gooseapple.core.sound.Sound;
 import org.gooseapple.game.event.DestroyBulletEvent;
+import org.gooseapple.game.event.EnteredTownEvent;
 import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.Fire;
 import org.gooseapple.game.objects.FlakBurst;
@@ -89,7 +93,7 @@ public class Game extends Level {
         this.flakBurst = new Sound("/sound/flak_burst.mp3");
         this.flakBurst.setVolume(0.05);
 
-        this.parallax = new Parallax(BackgroundType.PLAINS, screenSize);
+        this.parallax = new Parallax(BackgroundType.PLAINS, screenSize, this);
 
         spawnEnemies(5);
         
@@ -138,6 +142,17 @@ public class Game extends Level {
         if (event.getClickType() == MouseEvent.MouseClickType.LEFT) {
             this.locomotive.fireTurrets(event.getMousePosition());
         }
+    }
+
+    private double lastTownDistance = 5;
+    public boolean canSpawnTown() {
+        Random random = new Random();
+        double randomNumber = random.nextDouble(7,12);
+        if (distance - lastTownDistance > randomNumber) {
+            lastTownDistance += 8 * randomNumber;
+            return true;
+        }
+        return false;
     }
 
     @EventHandler
@@ -251,6 +266,15 @@ public class Game extends Level {
         }
     }
 
+    private long lastTownTime = 0;
+    private int displayBubble = 3; //used to display that a town is being entered
+    private String townName = "";
+    @EventHandler
+    public void enteredTown(EnteredTownEvent event) {
+        lastTownTime = System.currentTimeMillis();
+        townName = event.getTownName();
+    }
+
     @EventHandler
     public void handleDisplay(RenderEvent event) {
 
@@ -271,6 +295,13 @@ public class Game extends Level {
 
         }
 
+        if (System.currentTimeMillis() - lastTownTime < (displayBubble * 1000)) {
+            event.getGraphicsContext().save();
+            event.getGraphicsContext().setFill(Color.YELLOW);
+            event.getGraphicsContext().setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 20));
+            event.getGraphicsContext().fillText("Entering " + townName, (event.getScreenSize().getX() / 2) - 100, 200);
+            event.getGraphicsContext().restore();
+        }
     }
 
 
