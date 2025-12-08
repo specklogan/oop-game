@@ -19,6 +19,7 @@ import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.Fire;
 import org.gooseapple.game.objects.FlakBurst;
+import org.gooseapple.game.objects.entities.Biplane;
 import org.gooseapple.game.objects.entities.Zeppelin;
 import org.gooseapple.game.objects.train.Carriage;
 import org.gooseapple.game.objects.train.Locomotive;
@@ -40,6 +41,7 @@ public class Game extends Level {
     private Sound flakBurst;
 
     private Zeppelin zeppelin;
+    private Biplane biplane;
 
     private Vector2 screenSize = new Vector2(1300,400);
 
@@ -90,15 +92,19 @@ public class Game extends Level {
         for (int i = 0; i < count; i++) {
             enemyRarity = random.nextInt(100)+1;
 
-            if(enemyRarity<100 || enemyRarity>=100){  //Zeppelin 100% spawn rate
+            if(enemyRarity < 51){  //Zeppelin 50% spawn rate
                 double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
                 double y = random.nextDouble(40, screenSize.getY() - 200);
                 Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
                 zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
             }
-            else if(enemyRarity<1 || enemyRarity>=0){     //setup for future enemies
-                
+            else if(enemyRarity >= 51){     //Biplane 50% spawn rate
+                double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
+                double y = random.nextDouble(40, screenSize.getY() - 200);
+                Biplane biplane = new Biplane(new Vector2(x, y));
+                biplane.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
             }
+            //else if{}   for future enemy types
         }
     }
 
