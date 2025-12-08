@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
+import org.gooseapple.core.collision.PhysicsService;
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.KeyboardEvent;
 import org.gooseapple.core.event.events.MouseEvent;
@@ -18,9 +19,11 @@ import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.Bullet;
 import org.gooseapple.game.objects.Fire;
 import org.gooseapple.game.objects.FlakBurst;
+import org.gooseapple.game.objects.entities.Biplane;
 import org.gooseapple.game.objects.entities.Zeppelin;
 import org.gooseapple.game.objects.train.Carriage;
 import org.gooseapple.game.objects.train.Locomotive;
+import org.gooseapple.game.objects.train.TurretCar;
 import org.gooseapple.game.ui.background.BackgroundType;
 import org.gooseapple.game.ui.background.Parallax;
 import org.gooseapple.level.Level;
@@ -37,12 +40,10 @@ public class Game extends Level {
     private Scene scene;
     private GraphicsContext graphicsContext;
     private Sound drivingSound;
-    private Sound flakSound;
     private Sound flakBurst;
 
     private Zeppelin zeppelin;
-
-    private ArrayList<Bullet> bullets = new ArrayList<>();
+    private Biplane biplane;
 
     private Vector2 screenSize = new Vector2(1300,400);
 
@@ -74,28 +75,14 @@ public class Game extends Level {
         this.setEnabled(true);
 
         this.locomotive = new Locomotive( new Vector2(screenSize.getX() - 300, screenSize.getY() - 43), "textures/train1.png");
-        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
-        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
-        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
-        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_tank.png"));
-        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+        this.locomotive.addCarriageToEnd(new TurretCar(new Vector2(0,0)));
 
-        /*
-        var position = this.locomotive.getPosition().clone();
-        position.add(new Vector2(-50,0));
-        Fire fire = new Fire(position);
-        */ //Fire code
-        
-        spawnEnemies(random.nextInt(3,6));
-        
+        this.locomotive.loadCarriage();
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");
         this.drivingSound.setVolume(0.025);
         this.drivingSound.setLoop(true);
         this.drivingSound.play();
-
-        this.flakSound = new Sound("/sound/flak_fire.mp3");
-        this.flakSound.setVolume(0.25);
 
         this.flakBurst = new Sound("/sound/flak_burst.mp3");
         this.flakBurst.setVolume(0.05);
@@ -109,16 +96,20 @@ public class Game extends Level {
         for (int i = 0; i < count; i++) {
             enemyRarity = random.nextInt(100)+1;
 
-            if(enemyRarity<100 || enemyRarity>=100){  //Zeppelin 100% spawn rate
+            if(enemyRarity < 51){  //Zeppelin 50% spawn rate
                 double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
                 double y = random.nextDouble(40, screenSize.getY() - 200);
                 Zeppelin zeppelin = new Zeppelin(new Vector2(x, y));
-                zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
+                zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
             }
-            else if(enemyRarity<1 || enemyRarity>=0){     //setup for future enemies
-                
+            else if(enemyRarity >= 51){     //Biplane 50% spawn rate
+                double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
+                double y = random.nextDouble(40, screenSize.getY() - 200);
+                Biplane biplane = new Biplane(new Vector2(x, y));
+                biplane.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
             }
             enemiesActive++;
+            //else if{}   for future enemy types
         }
     }
 
@@ -133,20 +124,7 @@ public class Game extends Level {
     @EventHandler
     public void HandleMouseClick(MouseEvent event) {
         if (event.getClickType() == MouseEvent.MouseClickType.LEFT) {
-            this.flakSound.play();
-
-            Bullet bullet = new Bullet(new Vector2(this.locomotive.getPosition().getX() + 20, this.locomotive.getPosition().getY()+9));
-            Bullet bullet2 = new Bullet(new Vector2(this.locomotive.getPosition().getX() + 70, this.locomotive.getPosition().getY()+9));
-
-
-            Vector2 direction = event.getMousePosition().subtract(this.locomotive.getPosition()).normalize();
-
-            Random random = new Random();
-
-            bullet.getPhysicsBody().setVelocity(direction.multiply(random.nextDouble(7,7.25)));
-            bullet2.getPhysicsBody().setVelocity(direction.multiply(random.nextDouble(7,7.25)));
-            bullets.add(bullet);
-            bullets.add(bullet2);
+            this.locomotive.fireTurrets(event.getMousePosition());
         }
     }
 
@@ -154,7 +132,6 @@ public class Game extends Level {
     public void HandleBulletDestroyEvent(DestroyBulletEvent event) {
         flakBurst.play();
         new FlakBurst(event.getBullet().center());
-        bullets.remove(event.getBullet());
     }
 
     @EventHandler
@@ -177,14 +154,10 @@ public class Game extends Level {
             this.parallax.setSpeed(this.speed);
         }
         else if (event.keyCode(KeyCode.Z)) { //debug spawning zeppelin manual single spawn
-            zeppelin = new Zeppelin(new Vector2(screenSize.getX(), 40));
-            zeppelin.getPhysicsBody().setVelocity(new Vector2(-0.25,0));
-            System.out.println("Spawning Zeppelin (Manual)");
-            enemiesActive++;
+            spawnEnemies(1);
         }
         else if (event.keyCode(KeyCode.M)) { //debug spawning zeppelin calling method to spawn multiple
             spawnEnemies(5);
-            System.out.println("Spawning 5 enemies (Method)");
         }
         else if (event.keyCode(KeyCode.UP)) { //debug acceleration up
             acceleration++;
@@ -198,6 +171,7 @@ public class Game extends Level {
         }
     }
 
+
     private double deltaTime = 0;
     private double distance = 0;
     private String sDDistance = "";
@@ -207,7 +181,7 @@ public class Game extends Level {
     @EventHandler
     public void handleDevCounter(TickEvent event) {
         deltaTime = event.getDeltaTime();
-        distance += speed * deltaTime;
+        distance += speed * deltaTime * 1/10;
     }
 
     private int shortener;
@@ -248,7 +222,7 @@ public class Game extends Level {
 
         sDDistance = String.format("%.1f", distance)+ "km"; //Makes distance down to one decimal place and "converts" it to kilo meters
         event.getGraphicsContext().fillText("Current Distance: " +  sDDistance, 15,20);
-        sDSpeed = String.format("%.1f", speed)+ "km/s"; //Makes Speed down to one decimal place and "converts" it to kilo meters
+        sDSpeed = String.format("%.1f", speed * 9)+ "kph"; //Makes Speed down to one decimal place and "converts" it to kilo meters
         event.getGraphicsContext().fillText("Current Speed: " +  sDSpeed, 15,40);
 
         //event.getGraphicsContext().fillText("Total Spawned Enemy Count: " +  enemiesActive, 15,60);

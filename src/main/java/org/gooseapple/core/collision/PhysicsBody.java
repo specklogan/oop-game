@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public class PhysicsBody {
     private Rectangle parent;
+    private com.github.davidmoten.rtree2.geometry.Rectangle geometry;
     private Vector2 velocity;
     private Vector2 position;
     private Vector2 size;
     private boolean collisionEnabled = false;
     private UUID bodyID;
-
-    private boolean isAffectedByGravity = true;
+    private boolean isAffectedByGravity = false;
 
     public PhysicsBody(Rectangle parent, Vector2 position) {
         this.parent = parent;
@@ -22,8 +22,31 @@ public class PhysicsBody {
         this.size = parent.getSize().clone();
         this.position = position;
         this.velocity = new Vector2(0,0);
-
+        updateGeometry();
         PhysicsService.get().add(this);
+    }
+
+    public com.github.davidmoten.rtree2.geometry.Rectangle getOldGeometry() {
+        return geometry;
+    }
+
+    public void updateGeometry(Vector2 deltaChange) {
+        geometry = Geometries.rectangle(
+                position.getX(),
+                position.getY(),
+                position.getX() + size.getX(),
+                position.getY() + size.getY()
+        );
+        position.add(deltaChange);
+    }
+
+    public void updateGeometry() {
+        geometry = Geometries.rectangle(
+                position.getX(),
+                position.getY(),
+                position.getX() + size.getX(),
+                position.getY() + size.getY()
+        );
     }
 
     public void onRemove() {
@@ -55,16 +78,12 @@ public class PhysicsBody {
     }
 
     public com.github.davidmoten.rtree2.geometry.Rectangle toGeometry() {
-        return Geometries.rectangle(
-                this.position.getX(),
-                this.position.getY(),
-                this.position.getX() + this.size.getX(),
-                this.position.getY() + this.size.getY()
-        );
+        return geometry;
     }
 
     public void setPosition(Vector2 position) {
         this.position = position;
+        updateGeometry();
     }
 
     public Vector2 getSize() {
@@ -73,6 +92,7 @@ public class PhysicsBody {
 
     public void setCollisionSize(Vector2 size) {
         this.size = size;
+        updateGeometry();
     }
 
     public UUID getID() {
@@ -80,16 +100,10 @@ public class PhysicsBody {
     }
 
     public Vector2 getVelocity() {
-        onVelocityUpdated();
         return velocity;
     }
 
     public void setVelocity(Vector2 velocity) {
-        onVelocityUpdated();
         this.velocity = velocity;
-    }
-
-    private void onVelocityUpdated() {
-        PhysicsService.get().markActive(this);
     }
 }

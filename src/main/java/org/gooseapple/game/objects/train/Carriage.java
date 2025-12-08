@@ -5,10 +5,16 @@ import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.core.render.Texture;
+import org.gooseapple.game.objects.Bullet;
+
+import java.util.ArrayList;
 
 public class Carriage extends Rectangle {
     private Carriage previousCarriage;
     private Carriage nextCarriage;
+
+    private ArrayList<Turret> turrets =  new ArrayList<Turret>();
+    private boolean debugTurretPosition = false;
 
     private int health = 100;
     private int maxHealth = 100;
@@ -28,6 +34,30 @@ public class Carriage extends Rectangle {
             this.previousCarriage.addCarriageToEnd(carriage);
         } else {
             setPreviousCarriage(carriage);
+        }
+    }
+
+    public void loadCarriage() {
+        if (this.previousCarriage != null) {
+            this.previousCarriage.loadCarriage();
+        }
+    }
+
+    public boolean hasTurrets() {
+        return turrets.size() > 0;
+    }
+
+    public void addTurret(Turret turret) {
+        this.turrets.add(turret);
+    }
+
+    public void fireTurrets(Vector2 target) {
+        for (Turret turret : turrets) {
+            turret.fire(target);
+        }
+
+        if (this.previousCarriage != null) {
+            this.previousCarriage.fireTurrets(target);
         }
     }
 
@@ -53,6 +83,12 @@ public class Carriage extends Rectangle {
     @Override
     public void render(RenderEvent event) {
         super.render(event);
+        if (debugTurretPosition && turrets.size() > 0) {
+            for(Turret turret : turrets) {
+                event.getGraphicsContext().fillRect(turret.getPosition().getX(), turret.getPosition().getY(), 20, 20);
+
+            }
+        }
     }
 
     public int getMaxHealth() {

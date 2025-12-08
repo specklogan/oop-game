@@ -9,6 +9,23 @@ public class Locomotive extends Carriage{
         super(position, texture);
     }
 
+    @Override
+    public void loadCarriage() {
+        super.loadCarriage();
+
+        var firstTurretLocation = new Vector2(getPosition().getX() + 20, getPosition().getY() + 9);
+        var secondTurretLocation = new Vector2(getPosition().getX() + 70, getPosition().getY() + 9);
+
+        var firstTurret = new Turret(firstTurretLocation);
+        var secondTurret = new Turret(secondTurretLocation);
+
+        firstTurret.setReloadRate(1);
+        secondTurret.setReloadRate(1);
+
+        addTurret(firstTurret);
+        addTurret(secondTurret);
+    }
+
     @EventHandler
     @Override
     public void render(RenderEvent event) {

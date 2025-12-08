@@ -14,13 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PhysicsService implements EventListener {
     private static PhysicsService physicsService = new PhysicsService();
     private RTree<UUID, Rectangle> physicsEntities = RTree.create();
-    private ArrayList<PhysicsBody> activePhysicsBodies = new ArrayList<>(); //idk if i'll use this but for everything with a velocity > 0
-    private HashMap<UUID, PhysicsBody> activePhysicsBodiesMap = new HashMap<>();
-
+    private ConcurrentHashMap<UUID, PhysicsBody> activePhysicsBodiesMap = new ConcurrentHashMap<>();
     private double physicsSpeed = 70;
 
     public PhysicsService() {
@@ -31,75 +30,68 @@ public class PhysicsService implements EventListener {
         return physicsService;
     }
 
-    public void add(PhysicsBody physicsBody) {
-        activePhysicsBodies.add(physicsBody);
-        activePhysicsBodiesMap.put(physicsBody.getID(), physicsBody);
-        physicsEntities = physicsEntities.add(physicsBody.getID(), physicsBody.toGeometry());
+    public void add(PhysicsBody body) {
+        activePhysicsBodiesMap.put(body.getID(), body);
     }
 
-    public void remove(PhysicsBody physicsBody) {
-        activePhysicsBodies.remove(physicsBody);
-        activePhysicsBodiesMap.remove(physicsBody.getID());
-        physicsEntities = physicsEntities.delete(physicsBody.getID(), physicsBody.toGeometry());
+    public void remove(PhysicsBody body) {
+        activePhysicsBodiesMap.remove(body.getID());
     }
 
-    private boolean isActive(PhysicsBody physicsBody) {
-        return physicsBody.getVelocity().length() > 0;
-    }
-
-    public void markActive(PhysicsBody physicsBody) {
-        if (!activePhysicsBodies.contains(physicsBody)) {
-            activePhysicsBodies.add(physicsBody);
-        }
+    private boolean isActive(PhysicsBody body) {
+        return body.getVelocity().length() > 0;
     }
 
     @EventHandler
     public void handleTick(TickEvent event) {
-        for (int i = 0; i < activePhysicsBodies.size(); i++) {
-            PhysicsBody physicsBody = activePhysicsBodies.get(i);
-            if (!isActive(physicsBody)) {
-                activePhysicsBodies.remove(i);
-                continue;
+        double dt = event.getDeltaTime();
+
+        for (var entry : activePhysicsBodiesMap.keySet()) {
+            var physicsBody = activePhysicsBodiesMap.get(entry);
+
+            if (physicsBody.isAffectedByGravity()) {
+                physicsBody.getVelocity().add(new Vector2(0, physicsSpeed * (1/16d) * dt));
             }
 
-            if(physicsBody.isAffectedByGravity()) {
-                physicsBody.getVelocity().add(new Vector2(0, physicsSpeed * 1/16d * event.getDeltaTime()));
-            }
-            Rectangle oldGeometry = physicsBody.toGeometry();
+            Vector2 delta = physicsBody.getVelocity().clone().multiply(dt * physicsSpeed);
+            physicsBody.updateGeometry(delta);
 
-            physicsBody.getPosition().add(physicsBody.getVelocity().clone().multiply(event.getDeltaTime() * physicsSpeed));
-
-            physicsEntities = physicsEntities
-                    .delete(physicsBody.getID(), oldGeometry)
-                    .add(physicsBody.getID(), physicsBody.toGeometry());
         }
+
+        RTree<UUID, Rectangle> newTree = RTree.create();
+
+        for (var entry : activePhysicsBodiesMap.entrySet()) {
+            UUID id = entry.getKey();
+            PhysicsBody body = entry.getValue();
+            newTree = newTree.add(id, body.toGeometry());
+        }
+
+        physicsEntities = newTree;
 
         runCollisionChecks(event);
     }
 
     private void runCollisionChecks(TickEvent event) {
-        try {
-            for (PhysicsBody body : new ArrayList<>(activePhysicsBodies)) {
+        for (var entry : activePhysicsBodiesMap.keySet()) {
 
-                Rectangle geom = body.toGeometry();
+            var body =  activePhysicsBodiesMap.get(entry);
 
-                var potentialCollisions = physicsEntities.search(geom).iterator();
+            if (body == null)
+                continue; //fix case where deleted ones could still exist in this frame
 
-                for (Iterator<Entry<UUID, Rectangle>> it = potentialCollisions; it.hasNext(); ) {
-                    Entry<UUID, Rectangle> collision = it.next();
-                    UUID id = collision.value();
-                    PhysicsBody mappedValue = activePhysicsBodiesMap.get(id);
+            Rectangle geom = body.toGeometry();
+            Iterator<Entry<UUID, Rectangle>> it = physicsEntities.search(geom).iterator();
 
-                    if (mappedValue.isCollisionEnabled() && body.isCollisionEnabled()) {
-                        if (mappedValue != null && mappedValue != body) {
-                            handleCollision(mappedValue, body);
-                        }
-                    }
+            while (it.hasNext()) {
+                Entry<UUID, Rectangle> otherEntry = it.next();
+                UUID id = otherEntry.value();
+                PhysicsBody other = activePhysicsBodiesMap.get(id);
+
+                if (other != null && other != body &&
+                        other.isCollisionEnabled() && body.isCollisionEnabled()) {
+                    handleCollision(other, body);
                 }
             }
-
-        } catch (Exception ex) {
-
         }
     }
 

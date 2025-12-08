@@ -8,10 +8,10 @@ import org.gooseapple.game.objects.Fire;
 
 import java.util.Random;
 
-public class Zeppelin extends Entity {
+public class Biplane extends Entity {
 
-    public Zeppelin(Vector2 position) {
-        super(new Vector2(150,90), position, "textures/entities/zeppelin.png");
+    public Biplane(Vector2 position) {
+        super(new Vector2(150,90), position, "textures/entities/biplane.png");
         getPhysicsBody().setCollisionSize(new Vector2(120,40));
         getPhysicsBody().setAffectedByGravity(false);
         getPhysicsBody().setCollisionEnabled(true);
