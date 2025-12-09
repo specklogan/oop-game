@@ -32,8 +32,8 @@ contribution per member:
         Speed restrictions
         General editing among the code
         Multiple bug fixes
-        
-    Walter Fagley
+
+    Walter Fagley;
         Added Biplane Class and modified spawning to include biplanes
         Created Textures for
             - Biplanes
@@ -43,7 +43,6 @@ contribution per member:
             - Plains
             - Dustbowl
             - Mountains
-    ;
 
     ;
 
