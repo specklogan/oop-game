@@ -64,7 +64,7 @@ TA/Instructor Help:
 ------------------------------------------Hours spent on Project-----------------------------------------------------
 
 Hudson Boothby:
-    Around approximately 42 hours
+    Around approximately 40-50 hours
 Walter Fagley:
     Approximated time worked: 48 hours
 :
