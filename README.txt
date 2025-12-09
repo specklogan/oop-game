@@ -24,11 +24,14 @@ Controls:
 Notable design choices:
 
 known bugs:
+    Sometimes skips enemy spawns if moving too fast
 
 contribution per member:
     Hudson Boothby;
         Enemy spawn method
         Speed restrictions
+        General editing among the code
+        Multiple bug fixes
 
     ;
 
