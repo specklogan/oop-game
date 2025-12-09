@@ -20,6 +20,15 @@ Controls:
         "m" : spawn 5 enemies
         "b" : spawn biplane
 
+How To Run:
+    In your IDE, import the gradle script (build.gradle.kts), which will automatically install the javafx runtimes and rtree library automatically.
+
+    If you are using VSCode, there is an extension that will allow you to run gradle scripts, however, Intellij will automatically import them.
+
+    Set JDK to 22 or higher.
+
+    Once gradle finishes installing the packages, from the gradle menu, select the 'application run' target, which automatically puts the javafx runtimes in the launch command.
+
 -------------------------------------------README -------------------------------------------
 Notable design choices:
 
