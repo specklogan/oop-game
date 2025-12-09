@@ -54,7 +54,7 @@ public class Parallax implements EventListener {
                 dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/far-clouds.png"));
                 dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/far-mountains.png"));
                 dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/near-clouds.png"));
-                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/near-mountains.png"));
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/mountains.png"));
                 setBackgrounds(dustbowlBackgrounds);
                 break;
             case MOUNTAINS:
