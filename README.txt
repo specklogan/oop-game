@@ -7,7 +7,7 @@ A 2D Side scrolling game where you shoot down flying enemies. Travel far and see
 Collaborators: 
     - Hudson Boothby
     -
-    -
+    - Walter Fagley
 
 Controls:
     "w" or "Right Arrow Button" : Speed up
@@ -29,7 +29,16 @@ contribution per member:
     Hudson Boothby;
         Enemy spawn method
         Speed restrictions
-
+    Walter Fagley
+        Added Biplane Class and modified spawning to include biplanes
+        Created Textures for
+            - Biplanes
+            - Title Page
+            - Town Tiles
+            - Bombs
+            - Plains
+            - Dustbowl
+            - Mountains
     ;
 
     ;
@@ -52,7 +61,6 @@ TA/Instructor Help:
 
 Hudson Boothby:
     Around approximately 42 hours
-
-:
-
+Walter Fagley:
+    Approximated time worked: 48 hours
 :
