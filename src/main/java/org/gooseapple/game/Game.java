@@ -311,7 +311,7 @@ public class Game extends Level {
             event.getGraphicsContext().restore();
         }
 
-        if (this.locomotive != null && this.locomotive.getHealth() < 0) {
+        if (this.locomotive != null && this.locomotive.getHealth() <= 0) {
             event.getGraphicsContext().save();
             event.getGraphicsContext().setFill(Color.DARKRED);
             event.getGraphicsContext().setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 25));
