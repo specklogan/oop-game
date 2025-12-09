@@ -48,6 +48,7 @@ public class Game extends Level {
     private long currentTime;
     private boolean currUpdated = false;
     private int value = 1;
+    private boolean introUp = true;
 
     private Zeppelin zeppelin;
     private Biplane biplane;
@@ -179,6 +180,7 @@ public class Game extends Level {
 
     @EventHandler
     public void HandleKeyboardPress(KeyboardEvent event) {
+        introUp = false;
         if (event.keyCode(KeyCode.W) || event.keyCode(KeyCode.RIGHT)) {  //Changed keys, so can use left and right arrows too
             if (this.locomotive != null && this.locomotive.getHealth() > 0) {
                 if(this.speed >=maxSpeed-acceleration) return;      // Caps max speed, can change if wanted
@@ -312,6 +314,14 @@ public class Game extends Level {
         event.getGraphicsContext().fillText("Current Distance: " +  sDDistance, 15,20);
         sDSpeed = String.format("%.1f", speed * 9)+ "kph"; //Makes Speed down to one decimal place and "converts" it to kilo meters
         event.getGraphicsContext().fillText("Current Speed: " +  sDSpeed, 15,40);
+
+        if(introUp){
+            event.getGraphicsContext().save();
+            event.getGraphicsContext().setFill(Color.BLACK);
+            event.getGraphicsContext().setFont(Font.font("Lobster", FontWeight.EXTRA_BOLD, 25));
+            event.getGraphicsContext().fillText("Iron Convoy", (event.getScreenSize().getX() / 2) - 100, 200);
+            event.getGraphicsContext().restore();
+        }
 
         if(debugMode){
             event.getGraphicsContext().fillText("Current deltaTime: " +  deltaTime, 15,60);
