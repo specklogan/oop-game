@@ -47,6 +47,7 @@ public class Game extends Level {
     private Sound flakBurst;
     private long currentTime;
     private boolean currUpdated = false;
+    private int value = 1;
 
     private Zeppelin zeppelin;
     private Biplane biplane;
@@ -219,6 +220,21 @@ public class Game extends Level {
             else if (event.keyCode(KeyCode.H)){  //debug Hurt self
                 this.locomotive.damage(10);
             }
+            else if (event.keyCode(KeyCode.G)){   //debug background switch
+                if(value == 1){
+                    this.parallax = new Parallax(BackgroundType.MOUNTAINS, screenSize, this);
+                    value++;
+                }
+                else if (value == 2){
+                    this.parallax = new Parallax(BackgroundType.DUSTBOWL, screenSize, this);
+                    value++;
+                }
+                else if (value == 3){
+                    this.parallax = new Parallax(BackgroundType.PLAINS, screenSize, this);
+                    value = 1;
+                }
+
+            }
         }
     }
 
@@ -248,23 +264,23 @@ public class Game extends Level {
 
         if(sDistance != 0 && timer > 10){
             if((sDistance/50)%1 == 0){
-                spawnEnemies(2); //2 enemies total each increment of 500 (every 33 sec at max)
+                spawnEnemies(2); //2 enemies total each increment of 50 (every 33 sec at max)
                 if(debugMode)
                     System.out.println("Auto spawning 50");
                 resetTimer = true;
             }
             if((sDistance/100)%1 == 0){
-                spawnEnemies(4); //6 enemies total each increment of 1,0000 (every 67 sec at max)
+                spawnEnemies(4); //6 enemies total each increment of 100 (every 67 sec at max)
                 if(debugMode)
                     System.out.println("Auto spawning 100");
             }
             if((sDistance/500)%1 == 0){
-                spawnEnemies(6); //12 enemies total each increment of 5,000 (every 333 sec at max)
+                spawnEnemies(6); //12 enemies total each increment of 500 (every 333 sec at max)
                 if(debugMode)
                     System.out.println("Auto spawning 500");
             }
             if((sDistance/1000)%1 == 0){
-                spawnEnemies(8); //20 enemies total each increment of 10,000 (every 667 sec at max)
+                spawnEnemies(8); //20 enemies total each increment of 1,000 (every 667 sec at max)
                 if(debugMode)
                     System.out.println("Auto spawning 1000");
             }
