@@ -319,11 +319,9 @@ public class Game extends Level {
             event.getGraphicsContext().restore();
             long currentTime = System.currentTimeMillis();
             boolean endgame = false;
-            while(!endgame){
-                if (currentTime - System.currentTimeMillis() > 5000) {
-                    System.exit(0);
-                    endgame = true;
-                }
+            if (currentTime - System.currentTimeMillis() > 5000) {
+                System.exit(0);
+                endgame = true;
             }
         }
     }
