@@ -28,8 +28,10 @@ known bugs:
 
 contribution per member:
     Hudson Boothby;
-        Enemy spawn method
-        Speed restrictions
+        Created enemy spawn method
+            Timed enemy spawn to distance
+            randomize enemy spawn
+        Implemented speed restrictions and edits
         General editing among the code
         Multiple bug fixes
 
