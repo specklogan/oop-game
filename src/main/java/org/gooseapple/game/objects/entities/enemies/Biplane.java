@@ -1,21 +1,22 @@
-package org.gooseapple.game.objects.entities;
+package org.gooseapple.game.objects.entities.enemies;
 
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.game.event.BulletHitEvent;
 import org.gooseapple.game.objects.Fire;
+import org.gooseapple.game.objects.entities.Entity;
 
 import java.util.Random;
 
-public class Zeppelin extends Entity {
+public class Biplane extends Entity {
 
-    public Zeppelin(Vector2 position) {
-        super(new Vector2(150,90), position, "textures/entities/zeppelin.png");
+    public Biplane(Vector2 position) {
+        super(new Vector2(150,90), position, "textures/entities/biplane.png");
         getPhysicsBody().setCollisionSize(new Vector2(120,40));
         getPhysicsBody().setAffectedByGravity(false);
         getPhysicsBody().setCollisionEnabled(true);
-
+        setMaxHealth(60);
         setTextureOffset(new Vector2(-10, -25));
     }
 
@@ -42,7 +43,7 @@ public class Zeppelin extends Entity {
 
             if (getHealth() <= 0) {
                 this.getPhysicsBody().setCollisionEnabled(false);
-                this.getPhysicsBody().getVelocity().add(new  Vector2(0,0.4));
+                this.getPhysicsBody().getVelocity().add(new  Vector2(0,1.25));
             }
         }
     }
