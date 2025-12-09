@@ -318,11 +318,11 @@ public class Game extends Level {
             event.getGraphicsContext().fillText("GAME OVER, YOU LOST THE TRAIN", (event.getScreenSize().getX() / 2) - 100, 200);
             event.getGraphicsContext().restore();
             long currentTime = System.currentTimeMillis();
-            boolean endgame = false;
-            while(!endgame){
+            boolean endgame = true;
+            while(endgame){
                 if (currentTime - System.currentTimeMillis() > 5000) {
                     System.exit(0);
-                    endgame = true;
+                    endgame = false;
                 }
             }
         }
