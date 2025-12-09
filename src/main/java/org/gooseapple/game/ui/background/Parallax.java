@@ -49,6 +49,13 @@ public class Parallax implements EventListener {
                 setBackgrounds(plainBackgrounds);
                 break;
             case DUSTBOWL:
+                ArrayList<Rectangle> dustbowlBackgrounds = new ArrayList<>();
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/sky.png"));
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/far-clouds.png"));
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/far-mountains.png"));
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/near-clouds.png"));
+                dustbowlBackgrounds.add(new Rectangle(screenSize.clone(), new Vector2(0,0), false, "textures/parallax/dustbowl/near-mountains.png"));
+                setBackgrounds(dustbowlBackgrounds);
                 break;
             case MOUNTAINS:
                 ArrayList<Rectangle> backgrounds = new ArrayList<>();
