@@ -1,4 +1,4 @@
-package org.gooseapple.game.objects.train;
+package org.gooseapple.game.objects.entities.train;
 
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.EventListener;
