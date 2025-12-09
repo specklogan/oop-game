@@ -82,6 +82,13 @@ public class Game extends Level {
 
         this.locomotive = new Locomotive( new Vector2(screenSize.getX() - 300, screenSize.getY() - 43), "textures/train1.png");
         this.locomotive.addCarriageToEnd(new TurretCar(new Vector2(0,0)));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car.png"));
+        this.locomotive.addCarriageToEnd(new TurretCar(new Vector2(0,0)));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_tank.png"));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_container_blue.png"));
+        this.locomotive.addCarriageToEnd(new TurretCar(new Vector2(0,0)));
+        this.locomotive.addCarriageToEnd(new Carriage(new Vector2(0,0), "textures/train_car_container_blue.png"));
+
 
         this.locomotive.loadCarriage();
 
@@ -122,7 +129,7 @@ public class Game extends Level {
                 double x = random.nextDouble(screenSize.getX(), screenSize.getX() + 500);
                 double y = random.nextDouble(40, screenSize.getY() - 200);
                 Biplane biplane = new Biplane(new Vector2(x, y));
-                biplane.getPhysicsBody().setVelocity(new Vector2(-0.4,0));
+                biplane.getPhysicsBody().setVelocity(new Vector2(-0.6,0));
             }
             enemiesActive++;
             //else if{}   for future enemy types

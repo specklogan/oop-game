@@ -22,12 +22,12 @@ public class TurretCar extends Carriage{
         var secondTurret = new Turret(secondTurretLocation);
 
         var sound = new Sound("/sound/big_cannon_fire.mp3");
-        sound.setVolume(0.15);
+        sound.setVolume(0.12);
 
         firstTurret.setForce(9);
         secondTurret.setForce(9);
-        firstTurret.setDamage(30);
-        secondTurret.setDamage(30);
+        firstTurret.setDamage(40);
+        secondTurret.setDamage(40);
         firstTurret.setFireSound(sound);
         secondTurret.setFireSound(sound);
 

@@ -20,6 +20,7 @@ public class Entity extends Rectangle {
 
     public void setMaxHealth(double maxHealth) {
         this.maxHealth = maxHealth;
+        this.health = maxHealth;
     }
 
     public double getHealth() {

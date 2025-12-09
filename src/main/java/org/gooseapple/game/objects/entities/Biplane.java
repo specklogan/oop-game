@@ -15,7 +15,7 @@ public class Biplane extends Entity {
         getPhysicsBody().setCollisionSize(new Vector2(120,40));
         getPhysicsBody().setAffectedByGravity(false);
         getPhysicsBody().setCollisionEnabled(true);
-
+        setMaxHealth(60);
         setTextureOffset(new Vector2(-10, -25));
     }
 
@@ -42,7 +42,7 @@ public class Biplane extends Entity {
 
             if (getHealth() <= 0) {
                 this.getPhysicsBody().setCollisionEnabled(false);
-                this.getPhysicsBody().getVelocity().add(new  Vector2(0,0.4));
+                this.getPhysicsBody().getVelocity().add(new  Vector2(0,1.25));
             }
         }
     }

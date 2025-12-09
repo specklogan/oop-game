@@ -6,10 +6,11 @@ import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.core.render.Texture;
 import org.gooseapple.game.objects.Bullet;
+import org.gooseapple.game.objects.entities.Entity;
 
 import java.util.ArrayList;
 
-public class Carriage extends Rectangle {
+public class Carriage extends Entity {
     private Carriage previousCarriage;
     private Carriage nextCarriage;
 
@@ -20,8 +21,7 @@ public class Carriage extends Rectangle {
     private int maxHealth = 100;
 
     public Carriage(Vector2 position, String texture) {
-        super(new Vector2(90,40), position);
-        this.setTexture(new Texture(texture));
+        super(new Vector2(90,40), position, texture);
     }
 
     public Carriage getPreviousCarriage() {
@@ -89,26 +89,5 @@ public class Carriage extends Rectangle {
 
             }
         }
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public void damage(double amount) {
-        this.health -= amount;
-        System.out.println("current Carriage health: "+health);
     }
 }
