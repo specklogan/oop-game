@@ -214,6 +214,9 @@ public class Game extends Level {
                 acceleration--;
                 maxSpeed--;
             }
+            else if (event.keyCode(KeyCode.H)){  //debug Hurt self
+                this.locomotive.damage(10);
+            }
         }
     }
 

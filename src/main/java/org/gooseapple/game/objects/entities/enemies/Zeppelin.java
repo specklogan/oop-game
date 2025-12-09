@@ -38,9 +38,9 @@ public class Zeppelin extends Entity {
     public void tick(TickEvent event) {
         Random rand = new Random();
         if (System.currentTimeMillis() - lastDrop > (dropDelay * 1000)) {
+            dropDelay = rand.nextInt(4,12);
+            lastDrop = System.currentTimeMillis();
             if (this.getPosition().getX() < event.getScreenSize().getX() - 200 && this.getHealth() > 0) {
-                dropDelay = rand.nextInt(4,12);
-                lastDrop = System.currentTimeMillis();
                 new Bomb(this.getPosition().clone());
             }
         }
