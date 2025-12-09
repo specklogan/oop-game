@@ -13,6 +13,9 @@ import org.gooseapple.game.event.EnteredTownEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Handles the parallax effect, drawing the background, as well as drawing the railroad tiles on top
+ */
 public class Parallax implements EventListener {
     private ArrayList<Rectangle> backgrounds;
     private ArrayList<RailroadTile> railroad;

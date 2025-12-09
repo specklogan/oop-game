@@ -4,8 +4,9 @@ import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.sound.Sound;
+import org.gooseapple.game.event.BombEvent;
 
-public class TurretCar extends Carriage{
+public class TurretCar extends Carriage {
 
     public TurretCar(Vector2 position) {
         super(position, "textures/train_car_turret.png");
@@ -15,11 +16,13 @@ public class TurretCar extends Carriage{
     public void loadCarriage() {
         super.loadCarriage();
 
+        setMaxHealth(200);
+
         var firstTurretLocation = new Vector2(getPosition().getX() + 25, getPosition().getY() + 10);
         var secondTurretLocation = new Vector2(getPosition().getX() + 55, getPosition().getY() + 10);
 
-        var firstTurret = new Turret(firstTurretLocation);
-        var secondTurret = new Turret(secondTurretLocation);
+        Turret firstTurret = new Turret(firstTurretLocation);
+        Turret secondTurret = new Turret(secondTurretLocation);
 
         var sound = new Sound("/sound/big_cannon_fire.mp3");
         sound.setVolume(0.12);
@@ -39,5 +42,11 @@ public class TurretCar extends Carriage{
     @Override
     public void render(RenderEvent event) {
         super.render(event);
+    }
+
+    @EventHandler
+    @Override
+    public void onHitWithBomb(BombEvent bomb) {
+        super.onHitWithBomb(bomb);
     }
 }

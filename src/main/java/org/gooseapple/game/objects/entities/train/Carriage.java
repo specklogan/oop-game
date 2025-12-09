@@ -1,15 +1,21 @@
-package org.gooseapple.game.objects.train;
+package org.gooseapple.game.objects.entities.train;
 
 import org.gooseapple.core.event.EventHandler;
 import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.core.render.Texture;
+import org.gooseapple.game.event.BombEvent;
 import org.gooseapple.game.objects.Bullet;
+import org.gooseapple.game.objects.Explosion;
 import org.gooseapple.game.objects.entities.Entity;
+import org.gooseapple.game.objects.entities.train.Turret;
 
 import java.util.ArrayList;
 
+/**
+ * Base class for train objects, contains properties for next and previous carriages, as well as optional turrets
+ */
 public class Carriage extends Entity {
     private Carriage previousCarriage;
     private Carriage nextCarriage;
@@ -17,11 +23,9 @@ public class Carriage extends Entity {
     private ArrayList<Turret> turrets =  new ArrayList<Turret>();
     private boolean debugTurretPosition = false;
 
-    private int health = 100;
-    private int maxHealth = 100;
-
     public Carriage(Vector2 position, String texture) {
         super(new Vector2(90,40), position, texture);
+        getPhysicsBody().setCollisionEnabled(true);
     }
 
     public Carriage getPreviousCarriage() {
@@ -37,6 +41,9 @@ public class Carriage extends Entity {
         }
     }
 
+    /**
+     * Initialize carriage with turrets, and any additional properties needed for runtime
+     */
     public void loadCarriage() {
         if (this.previousCarriage != null) {
             this.previousCarriage.loadCarriage();
@@ -52,6 +59,10 @@ public class Carriage extends Entity {
     }
 
     public void fireTurrets(Vector2 target) {
+        if (getHealth() <= 0) {
+            return;
+        }
+
         for (Turret turret : turrets) {
             turret.fire(target);
         }
@@ -86,8 +97,15 @@ public class Carriage extends Entity {
         if (debugTurretPosition && turrets.size() > 0) {
             for(Turret turret : turrets) {
                 event.getGraphicsContext().fillRect(turret.getPosition().getX(), turret.getPosition().getY(), 20, 20);
-
             }
+        }
+    }
+
+    @EventHandler
+    public void onHitWithBomb(BombEvent bomb) {
+        if (bomb.getEntity() == this) {
+            new Explosion(bomb.getBomb().center());
+            damage(bomb.getBomb().getDamage());
         }
     }
 }

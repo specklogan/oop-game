@@ -5,6 +5,9 @@ import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.core.render.Rectangle;
 
+/**
+ * Base entity class which contains properties for health, max health, as well as the ability to damage it.
+ */
 public class Entity extends Rectangle {
     private double health = 100;
     private double maxHealth = 100;
@@ -40,7 +43,7 @@ public class Entity extends Rectangle {
 
         super.render(event);
 
-        if (renderHealth && health > 0) {
+        if (renderHealth && (health > 0 && health < maxHealth)) {
             Vector2 topLeft = this.getPosition().clone();
             topLeft.add(new Vector2(20, -20));
 

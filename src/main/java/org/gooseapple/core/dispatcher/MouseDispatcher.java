@@ -6,6 +6,9 @@ import org.gooseapple.core.event.events.MouseEvent;
 import org.gooseapple.core.math.Vector2;
 import org.gooseapple.game.Game;
 
+/**
+ * Hooks into JFX mouse method to call our custom event system which is easily handled in the game class.
+ */
 public class MouseDispatcher {
     private Game game;
 

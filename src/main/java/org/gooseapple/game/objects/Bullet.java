@@ -10,6 +10,7 @@ import org.gooseapple.core.render.Rectangle;
 import org.gooseapple.game.event.BulletHitEvent;
 import org.gooseapple.game.event.DestroyBulletEvent;
 import org.gooseapple.game.objects.entities.Entity;
+import org.gooseapple.game.objects.entities.train.Carriage;
 
 import java.util.Random;
 
@@ -58,7 +59,8 @@ public class Bullet extends Rectangle {
 
         var otherBody = (firstBody == getPhysicsBody()) ? secondBody : firstBody;
 
-        if (otherBody.getParent() instanceof Entity entity) {
+        //Make sure that we didn't hit a train
+        if (otherBody.getParent() instanceof Entity entity && !(otherBody.getParent() instanceof Carriage)) {
             BulletHitEvent bulletEvent = new BulletHitEvent(this, entity);
             bulletEvent.dispatch();
             this.remove();

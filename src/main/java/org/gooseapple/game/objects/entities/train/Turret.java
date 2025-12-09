@@ -9,6 +9,9 @@ import org.gooseapple.game.objects.Bullet;
 
 import java.util.Random;
 
+/**
+ * Turret class fires a bullet when the Carriage object that owns it is fired
+ */
 public class Turret {
     private Vector2 position;
     private Bullet bullet;
@@ -16,7 +19,7 @@ public class Turret {
     private Sound fireSound;
 
     private double damage = 10;
-    private double reloadRate = 5;
+    private double reloadRate = 3.5;
     private long lastFired = 0;
     private double force = 7;
 

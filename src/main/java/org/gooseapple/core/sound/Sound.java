@@ -6,13 +6,19 @@ import javafx.util.Duration;
 
 import java.nio.file.Paths;
 
+/**
+ * Wrapper for the javafx sound object, loopable
+ */
 public class Sound {
     private final Media sound;
     private double volume = 1.0;
     private boolean loop = false;
 
+    /**
+     * Sound path, as "/sound/yourfile.mp3"
+     * @param soundPath
+     */
     public Sound(String soundPath) {
-        // Use resource path (e.g. "/sound/test.mp3")
         this.sound = new Media(getClass().getResource(soundPath).toExternalForm());
     }
 

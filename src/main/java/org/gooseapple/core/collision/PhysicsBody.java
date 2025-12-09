@@ -6,6 +6,9 @@ import org.gooseapple.core.render.Rectangle;
 
 import java.util.UUID;
 
+/**
+ * Used in the physics service to add physics to a rectangle object, has properties for collision, size, position
+ */
 public class PhysicsBody {
     private Rectangle parent;
     private com.github.davidmoten.rtree2.geometry.Rectangle geometry;

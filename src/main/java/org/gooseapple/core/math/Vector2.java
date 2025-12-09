@@ -1,5 +1,8 @@
 package org.gooseapple.core.math;
 
+/**
+ * Vector2 Helper class which makes things easier to work with
+ */
 public class Vector2 implements Cloneable {
     private double x;
     private double y;

@@ -16,9 +16,12 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Handles the 2D physics part of the system
+ */
 public class PhysicsService implements EventListener {
     private static PhysicsService physicsService = new PhysicsService();
-    private RTree<UUID, Rectangle> physicsEntities = RTree.create();
+    private RTree<UUID, Rectangle> physicsEntities = RTree.create(); //RTree allow easy and computationally cheap base collision checking, before the AABB checks below
     private ConcurrentHashMap<UUID, PhysicsBody> activePhysicsBodiesMap = new ConcurrentHashMap<>();
     private double physicsSpeed = 70;
 
@@ -95,6 +98,11 @@ public class PhysicsService implements EventListener {
         }
     }
 
+    /**
+     * CHeck if two AABB bound objects collide
+     * @param a first physics body
+     * @param b second physics body
+     */
     private void handleCollision(PhysicsBody a, PhysicsBody b) {
         Vector2 aPos = a.getPosition();
         Vector2 aSize = a.getSize();

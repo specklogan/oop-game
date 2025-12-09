@@ -93,7 +93,7 @@ public class Game extends Level {
         this.locomotive.loadCarriage();
 
         this.drivingSound = new Sound("/sound/train_drive.mp3");
-        this.drivingSound.setVolume(0.025);
+        this.drivingSound.setVolume(0.0125);
         this.drivingSound.setLoop(true);
         this.drivingSound.play();
 
@@ -103,7 +103,6 @@ public class Game extends Level {
         this.parallax = new Parallax(BackgroundType.PLAINS, screenSize, this);
 
         spawnEnemies(5);
-        
     }
 
     private int enemiesActive = 0;
@@ -178,9 +177,11 @@ public class Game extends Level {
     @EventHandler
     public void HandleKeyboardPress(KeyboardEvent event) {
         if (event.keyCode(KeyCode.W) || event.keyCode(KeyCode.RIGHT)) {  //Changed keys, so can use left and right arrows too
-            if(this.speed >=maxSpeed-acceleration) return;      // Caps max speed, can change if wanted
-            this.speed += acceleration;
-            this.parallax.setSpeed(this.speed);
+            if (this.locomotive != null && this.locomotive.getHealth() > 0) {
+                if(this.speed >=maxSpeed-acceleration) return;      // Caps max speed, can change if wanted
+                this.speed += acceleration;
+                this.parallax.setSpeed(this.speed);
+            }
         } 
         else if (event.keyCode(KeyCode.S) || event.keyCode(KeyCode.LEFT)) {
             if (this.speed <=minSpeed+acceleration) return;     // Prevents negative speed / reverse movement
@@ -196,25 +197,22 @@ public class Game extends Level {
         if(debugMode){
             if (event.keyCode(KeyCode.Z)) { //debug spawning Zepplen single spawn
                 spawnEnemies(1, 50);
-                System.out.println("Spawning Zep");
             }
             else if (event.keyCode(KeyCode.B)) { //debug spawning Biplane single spawn
                 spawnEnemies(1, 51);
-                System.out.println("Spawning Bi");
             }
             else if (event.keyCode(KeyCode.M)) { //debug spawning enemy multiple spawn
                 spawnEnemies(5);
-                System.out.println("Spawning 5 Random");
             }
             else if (event.keyCode(KeyCode.UP)) { //debug acceleration up
-                acceleration++;
-                maxSpeed++;
-                System.out.println("Acceleration Up: "+acceleration);
+                if (this.locomotive != null && this.locomotive.getHealth() > 0) {
+                    acceleration++;
+                    maxSpeed++;
+                }
             }
             else if (event.keyCode(KeyCode.DOWN)) { //debug acceleration down
                 acceleration--;
                 maxSpeed--;
-                System.out.println("Acceleration Down: "+acceleration);
             }
         }
     }
@@ -307,6 +305,14 @@ public class Game extends Level {
             event.getGraphicsContext().setFill(Color.YELLOW);
             event.getGraphicsContext().setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 20));
             event.getGraphicsContext().fillText("Entering " + townName, (event.getScreenSize().getX() / 2) - 100, 200);
+            event.getGraphicsContext().restore();
+        }
+
+        if (this.locomotive != null && this.locomotive.getHealth() < 0) {
+            event.getGraphicsContext().save();
+            event.getGraphicsContext().setFill(Color.DARKRED);
+            event.getGraphicsContext().setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 25));
+            event.getGraphicsContext().fillText("GAME OVER, YOU LOST THE TRAIN", (event.getScreenSize().getX() / 2) - 100, 200);
             event.getGraphicsContext().restore();
         }
     }

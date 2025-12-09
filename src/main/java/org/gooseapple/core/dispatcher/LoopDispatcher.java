@@ -7,6 +7,9 @@ import org.gooseapple.core.event.events.RenderEvent;
 import org.gooseapple.core.event.events.TickEvent;
 import org.gooseapple.game.Game;
 
+/**
+ * Hooks into JFX rendering code via animation timers, keeps a target FPS and TPS, used everywhere in the game
+ */
 public class LoopDispatcher {
     private int targetFPS = 60;
     private int targetTPS = 60;
@@ -34,7 +37,7 @@ public class LoopDispatcher {
                 if (canTick()) {
                     accumulator -= (1000d/targetTPS);
 
-                    TickEvent event = new TickEvent(deltaTime/1000d);
+                    TickEvent event = new TickEvent(deltaTime/1000d, game.getScreenSize());
                     event.dispatch();
                 }
             }
