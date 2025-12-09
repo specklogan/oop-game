@@ -45,6 +45,8 @@ public class Game extends Level {
     private GraphicsContext graphicsContext;
     private Sound drivingSound;
     private Sound flakBurst;
+    private long currentTime;
+    private int currUpdated = 0;
 
     private Zeppelin zeppelin;
     private Biplane biplane;
@@ -317,7 +319,10 @@ public class Game extends Level {
             event.getGraphicsContext().setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 25));
             event.getGraphicsContext().fillText("GAME OVER, YOU LOST THE TRAIN", (event.getScreenSize().getX() / 2) - 100, 200);
             event.getGraphicsContext().restore();
-            long currentTime = System.currentTimeMillis();
+            if(currUpdated != 1){
+                currentTime = System.currentTimeMillis();
+                currUpdated = 1;
+            }
             if (System.currentTimeMillis() - currentTime> 5000) {
                 System.exit(0);
             }
